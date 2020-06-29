@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src = "./js/vue.js"></script>
+</head>
+<body>
+	<div id ='app'>
+	
+		<ul>
+		    <li v-for="(value,key,index)  in  emp">
+		     		{{index}}:{{key}}:{{value}}
+		    </li>
+  		</ul>
+
+
+		<ul>
+		    <li v-for="i in 5">
+		     		{{i}}
+		    </li>
+  		</ul>
+	</div>
+	<script type="text/javascript">
+		var app = new Vue({
+			el:"#app",
+			data:{
+				
+				emp:{name:'柳岩', hobby:'篮球', age: 21}
+			}
+		})
+
+	</script>
+</body>
+</html> 
