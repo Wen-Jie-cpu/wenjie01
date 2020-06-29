@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="./js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<input type="text" v-model="name">
+<input type="num" v-model="num">
+<button v-on:click="num++">加</button>
+<button @click="num--">减</button>
+	<h2>
+	全世界有{{num}}位妙龄美女喜欢
+	{{name}}，
+</h2>
+</div>
+<script src="./node_modules/vue/dist/vue.js"></script>
+<script type="text/javascript">
+//生成一个vue实力
+var app = new Vue({
+	el:"#app",
+	data:{
+		name:"文杰",
+		num:1
+	}
+	
+})
+</script>
+
+</body>
+</html>
