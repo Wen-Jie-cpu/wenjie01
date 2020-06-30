@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiyun.mapper.StuMapper">
+
+
+	<resultMap type="stu" id="BaseMap">
+	<id column="sid" property="sid"/>
+	<result column="sname" property="sname"/>
+	<result column="age" property="age"/>
+	<result column="sex" property="sex"/>
+	<result column="depid" property="depid"/>
+	<result column="birthday" property="birthday"/>
+	<result column="pic" property="[ic]"/>
+	
+	<association property="dept" javaType="dept">
+	<id column="depid" property="depid"/>
+	<result column="dname" property="dname"/>
+	</association>
+	</resultMap>
+	<select id="findAll" resultMap="BaseMap">
+	SELECT * FROM stu,dept WHERE stu.depid=dept.depid
+	</select>
+</mapper>
