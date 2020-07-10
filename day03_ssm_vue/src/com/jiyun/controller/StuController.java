@@ -3,9 +3,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.jiyun.bean.Dept;
 import com.jiyun.bean.Stu;
 import com.jiyun.service.StuService;
 
@@ -26,5 +28,41 @@ public String toShow(){
 		System.out.println("list");
 		return list;
 	}
+//跳转添加页面并查询班级
+	@RequestMapping("toAdd")
+	public String toAdd(){
+		return "add";
+	}
+//添加：
+	@RequestMapping("addStu")
+	@ResponseBody
+	public int  addStu(@RequestBody Stu stu){
+		int i = stuService.addStu(stu);
+		
+		return i;
+		
+	}
+	//查询部门：
+@RequestMapping("findDept")
+@ResponseBody
+public List<Dept> findDept(){
+	List<Dept> dList = stuService.findDept();
+	return dList;
+
+}
+//修改
+@RequestMapping("updateStu")
+@ResponseBody
+public int updateStu(@RequestBody Stu stu){
+	int i = stuService.updateStu(stu);
+	return i;
+}
+//删除
+@RequestMapping("delStu")
+@ResponseBody
+public int delStu(@RequestBody Integer[] ids){
+	int i = stuService.delStu(ids);
+	return i;
 	
+}
 }
