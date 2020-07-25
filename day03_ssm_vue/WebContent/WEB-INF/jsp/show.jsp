@@ -21,6 +21,16 @@ display:none
 <body>
 <center>
 <a href="${pageContext.request.contextPath }/toAdd.do">添加</a>
+姓名：<input type="text" v-model="stu.sname">
+<br>
+部门：
+<select v-model="stu.depid">
+<option v-for="dept in dList" :value="dept.depid" v-text="dept.dname"></option>
+</select>
+<br>
+生日：
+<input type="date" v-model="start">--<input type="date" v-model="end"><br>
+<input type="button" value="搜索" @click="jump()">
 <div id="did" border="1px" >
 <table id="tid" border="1px" :class="flag2">
 	<tr>
@@ -51,6 +61,11 @@ display:none
 	</tr>
 	
 </table>
+当前页{{page.pageNum}}/总页数{{page.pages}} &nbsp;&nbsp;&nbsp;总条数{{page.total}}
+<input type="button" value="首页" @click="jump(page.firsPage)">
+<input type="button" value="上一页" @click="jump(page.prePage)">
+<input type="button" value="下一页" @click="jump(page.nextPage)">
+<input type="button" value="尾页" @click="jump(page.lastPage)">
 <input type="button" @click="del" value="删除">
 <form  id="fid"  :class="flag1">
 <input type="hidden" v-model="stu.sid"><br>
@@ -80,17 +95,24 @@ display:none
 		el:"#did",
 		data:{
 			slist:[],
-			stu:{},
+			stu:{
+				
+				depid=0
+			},
 			dList:[],
 			flag1:'hidden',
 			flag2:'show',
-			ids:[]
-	
+			ids:[],
+			page:{},
+			start:'',
+			end:''
+			
 		},
 		created(){
-			axios.post("${pageContext.request.contextPath }/findAll.do").then(function(res){
+			axios.post("${pageContext.request.contextPath }/findAll.do",{pageNum:1}).then(function(res){
 				
-				table.slist = res.data;
+				table.slist = res.data.list;
+				page.table = res.data;
 			});
 			axios.post("${pageContext.request.contextPath }/findDept.do").then(function(res){
 				table.dList = res.data;
@@ -128,6 +150,15 @@ display:none
 				};	
 					
 				})
+			}
+			jump(){
+				axios.post("${pageContext.request.contextPath }/findAll.do",{pageNum:pageNum,stu:this.stu,start:this.start,end:this.end}).then(function(res){
+				
+					table.slist = res.data.list;
+					page.table = res.data;
+				});
+				}
+				
 			}
 		}
 	})

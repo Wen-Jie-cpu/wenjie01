@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.jiyun.bean.Dept;
 import com.jiyun.bean.Stu;
+import com.jiyun.bean.StuVo;
 import com.jiyun.mapper.StuMapper;
 
 @Service
@@ -14,9 +15,9 @@ public class StuService {
 @Autowired
 private StuMapper stuMapper;
 
-public List<Stu> findAll() {
+public List<Stu> findAll(StuVo stuVo) {
 	// TODO Auto-generated method stub
-	return stuMapper.findAll();
+	return stuMapper.findAll(stuVo);
 }
 
 public List<Dept> findDept() {

@@ -9,10 +9,11 @@ import org.apache.ibatis.annotations.Update;
 
 import com.jiyun.bean.Dept;
 import com.jiyun.bean.Stu;
+import com.jiyun.bean.StuVo;
 
 public interface StuMapper {
 
-	List<Stu> findAll();
+	List<Stu> findAll(StuVo stuVo);
 //查询部门
 	@Select("select * from dept")
 	List<Dept> findDept();

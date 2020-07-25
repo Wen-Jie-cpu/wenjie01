@@ -222,7 +222,6 @@
 	<script src="${path }/resources/js/plugins/layer/laydate/laydate.js"></script>
     
 	<script type="text/javascript">
-	
 	Date.prototype.Format = function (fmt) {
 		    var o = {  
 		        "M+": this.getMonth() + 1, //月份   

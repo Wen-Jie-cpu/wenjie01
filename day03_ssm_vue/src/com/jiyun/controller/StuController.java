@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jiyun.bean.Dept;
 import com.jiyun.bean.Stu;
+import com.jiyun.bean.StuVo;
 import com.jiyun.service.StuService;
 
 @Controller
@@ -23,10 +26,13 @@ public String toShow(){
 
 	@RequestMapping("findAll")
 	@ResponseBody
-	public List<Stu> findAll(){
-		List<Stu>list = stuService.findAll();
+	public PageInfo<Stu> findAll(@RequestBody StuVo stuVo){
+		PageHelper.startPage(stuVo.getPageNum(), 3);
+		
+		List<Stu>list = stuService.findAll(stuVo);
+		PageInfo<Stu>pageInfo = new PageInfo<Stu>(list);
 		System.out.println("list");
-		return list;
+		return pageInfo;
 	}
 //跳转添加页面并查询班级
 	@RequestMapping("toAdd")
@@ -65,4 +71,5 @@ public int delStu(@RequestBody Integer[] ids){
 	return i;
 	
 }
+
 }

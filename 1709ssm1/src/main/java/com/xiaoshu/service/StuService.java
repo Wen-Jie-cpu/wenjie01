@@ -111,4 +111,10 @@ private ClazzMapper cm;
 			return cm.findAllClazz();
 		}
 
+		public List<Student> findAll() {
+			List<Student> stuList = sm.findAll(null);
+			return stuList;
+		}
+
+		
 }

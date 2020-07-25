@@ -1,6 +1,10 @@
 package com.xiaoshu.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +25,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.xiaoshu.config.util.ConfigUtil;
+import com.xiaoshu.entity.Attachment;
 import com.xiaoshu.entity.Clazz;
+import com.xiaoshu.entity.Log;
 import com.xiaoshu.entity.Operation;
 import com.xiaoshu.entity.Role;
 import com.xiaoshu.entity.Student;
@@ -27,6 +37,7 @@ import com.xiaoshu.service.RoleService;
 import com.xiaoshu.service.StuService;
 import com.xiaoshu.service.UserService;
 import com.xiaoshu.util.StringUtil;
+import com.xiaoshu.util.TimeUtil;
 import com.xiaoshu.util.WriterUtil;
 
 import com.alibaba.fastjson.JSONObject;
@@ -48,6 +59,100 @@ public class StuController extends LogController{
 	
 	@Autowired
 	private StuService ss;
+	
+	
+	
+	/**
+	 * 备份
+	 */
+	@RequestMapping("outStu")
+	public void outStu(HttpServletRequest request,HttpServletResponse response){
+		JSONObject result = new JSONObject();
+		try {
+			String time = TimeUtil.formatTime(new Date(), "yyyyMMddHHmmss");
+		    String excelName = "手动备份"+time;
+			List<Student> list = ss.findAll();
+			String[] handers = {"学生编号","学生名","班级","性别","照片","生日","爱好"};
+			// 1导入硬盘
+			ExportExcelToDisk(request,handers,list, excelName);
+			// 2导出的位置放入attachment表
+			
+			result.put("success", true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("", "对不起，备份失败");
+		}
+		WriterUtil.write(response, result.toString());
+	}
+	
+	
+	
+	// 导出到硬盘
+	@SuppressWarnings("resource")
+	private void ExportExcelToDisk(HttpServletRequest request,
+			String[] handers, List<Student> list, String excleName) throws Exception {
+		
+		try {
+			HSSFWorkbook wb = new HSSFWorkbook();//创建工作簿
+			HSSFSheet sheet = wb.createSheet("操作记录备份");//第一个sheet
+			HSSFRow rowFirst = sheet.createRow(0);//第一个sheet第一行为标题
+			rowFirst.setHeight((short) 500);
+			for (int i = 0; i < handers.length; i++) {
+				sheet.setColumnWidth((short) i, (short) 4000);// 设置列宽
+			}
+			//写标题了
+			for (int i = 0; i < handers.length; i++) {
+			    //获取第一行的每一个单元格
+			    HSSFCell cell = rowFirst.createCell(i);
+			    //往单元格里面写入值
+			    cell.setCellValue(handers[i]);
+			}
+			int j=0;
+			for (int i = 0;i < list.size(); i++) {
+			    //获取list里面存在是数据集对象
+			    Student stu = list.get(i);
+			    String cname = stu.getClazz().getCname();
+			    String hobby = stu.getHobby();
+			    if ("h1909A".equals(cname) && hobby.contains("篮球")) {
+			    	   //创建数据行
+				    HSSFRow row = sheet.createRow(j+1);
+				    //设置对应单元格的值
+				    row.setHeight((short)400);   // 设置每行的高度
+				    //"序号","操作人","IP地址","操作时间","操作模块","操作类型","详情"
+				    row.createCell(0).setCellValue(j+1);
+				    row.createCell(1).setCellValue(stu.getSname());
+				    row.createCell(2).setCellValue(stu.getClazz().getCname());
+				    row.createCell(3).setCellValue(stu.getSex());
+				    row.createCell(4).setCellValue(stu.getImg());
+				    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				    row.createCell(5).setCellValue(simpleDateFormat.format(stu.getBirthday()));
+				    row.createCell(6).setCellValue(stu.getHobby());
+				    
+				    j++;
+				}
+			    
+			    
+			    
+			 
+			}
+			//写出文件（path为文件路径含文件名）
+				OutputStream os;
+				File file = new File("D:/"+excleName+".xls");
+				
+				if (!file.exists()){//若此目录不存在，则创建之  
+					file.createNewFile();  
+					logger.debug("创建文件夹路径为："+ file.getPath());  
+	            } 
+				os = new FileOutputStream(file);
+				wb.write(os);
+				os.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+	}
+
+	
 	@RequestMapping("stuIndex")
 	public String index(HttpServletRequest request,Integer menuid) throws Exception{
 		List<Clazz> cList = ss.findAllClazz();

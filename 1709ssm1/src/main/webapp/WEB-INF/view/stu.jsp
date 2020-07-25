@@ -354,6 +354,21 @@
 	    var oInit = new Object();
 	    var postdata = {};
 
+	    $("#btn_out").click(function(){
+    		$.ajax({
+    		    url:"outStu.htm",
+    		    dataType:"json",
+    		    type:"post",
+    		    success:function(res){
+    		    	if(res.success){
+    	    			alert("导出成功!")
+    	    		}else{
+    	    			alert("到处失败!");
+    	    		}
+    		    }
+    		});
+        });
+	    
 	    oInit.Init = function () {
 	        //初始化页面上面的按钮事件
 	    	$("#btn_add").click(function(){
@@ -404,6 +419,22 @@
 		$('#username').val(getSelection.sname);
 		$('#bid').val(new Date(getSelection.birthday).Format("yyyy-MM-dd"));
 		$('input[value="'+getSelection.sex+'"]').prop("checked",true);
+		
+		$("#btn_out").click(function(){
+			
+			$.ajax({
+			    url:"outStu.htm",
+			    dataType:"json",
+			    type:"post",
+			    success:function(res){
+			    	if(res.success){
+		    			alert("导出成功");
+		    		}else{
+		    			alert("导出失败");
+		    		}
+			    }
+			});
+		});
 		
 		var hobby = getSelection.hobby;
 		if(hobby!=null){

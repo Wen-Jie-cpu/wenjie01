@@ -19,9 +19,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<result column="dname" property="dname"/>
 	</association>
 	</resultMap>
-	<select id="findAll" resultMap="BaseMap">
+	<select id="findAll" resultMap="BaseMap" parameterType="StuVo">
 	SELECT * FROM stu,dept WHERE stu.depid=dept.depid
+	<if test="stu.sname!=null and stu.sname!=''">
+	and sname like "%${stu.sname }%"
+	</if>
+	<if test="start!=null and start!=''">
+	and birthday &gt; #{start}
+	</if>
+	<if test="end!=null and end!=''">
+	and birthday &lt; #{end}
+	</if>
+	<if test="stu.depid!=0">
+	and depid=#{depid}
+	</if>
+	
 	</select>
+	
+	
 	<delete id="delStu">
 	delete from stu where sid in
 	<foreach collection="ids" item="id" open="(" close=")" separator=",">
